@@ -3,7 +3,6 @@ import React from 'react';
 import Arrows from './components/Arrows';
 import Controls from './components/Controls';
 import Grid from './components/Grid';
-import Test from './components/Test';
 
 
 function App() {
@@ -14,7 +13,6 @@ function App() {
       <Grid />
       <Controls />
       <Arrows />
-      <Test />
     </div>
   )
 }

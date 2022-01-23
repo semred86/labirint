@@ -6,13 +6,13 @@ import thunk from 'redux-thunk';
 // import createSagaMiddleware from 'redux-saga'
 import './index.css';
 import App from './App';
-import fieldReducer from './redux/fieldReducer';
+import rootReducer from './redux/rootReducer';
 import reportWebVitals from './reportWebVitals';
 // import { sagaWatcher } from './redux/sagas';
 
 // const saga = createSagaMiddleware()
 
-const store = createStore(fieldReducer, compose(
+const store = createStore(rootReducer, compose(
   applyMiddleware(
     thunk//, saga
   ),

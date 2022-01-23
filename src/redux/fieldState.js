@@ -1,75 +1,53 @@
 export const xArr = ['A', 'B', 'C']
 export const yArr = [1, 2, 3]
+
 export const arrows = {
-  up:     '↑', 
-  down:   '↓', 
-  left:   '←', 
-  right:  '→'
+  // up: '▲',
+  up: '↑',
+  // down: '▼',
+  down: '↓',
+  // left: '◄',
+  left: '←',
+  // right: '►'
+  right: '→'
 }
-
-const target = '~(@-_-@)~';
-
-
-const coordObj = {
-  x: random(0, xArr.length - 1),
-  y: random(0, yArr.length - 1)
-}
-
-const getKey = (x, y) => y * xArr.length + x;
-const key = getKey(coordObj.x, coordObj.y);
 
 export function fieldInit() {
   const items = []
   yArr.forEach(y => {
     xArr.forEach(x => {
-      items.push({
-        title: '',
-        key: items.length
-      })
+      items.push('')
     })
   })
-  // items[key].title = target
   return items
 }
 
-const setState = (x, y) => {
-  if (x >= 0 && x < xArr.length && y >= 0 && y < yArr.length) {
-    const key = getKey(x, y);
-    return { key, x, y, items: fieldInit(key) }
-  }
-  return
-}
-
 export function move(state, direction) {
+  const check = (c, arr) => c >= 0 && c < arr.length
+  const set = (c, n, arr) => check(c + n, arr) ? c + n : c
   switch (direction) {
     case arrows.up:
-      return setState(state.x, state.y - 1)
+      return { y: set(state.y, -1, yArr) }
     case arrows.down:
-      return setState(state.x, state.y + 1)
+      return { y: set(state.y, 1, yArr) }
     case arrows.left:
-      return setState(state.x - 1, state.y)
+      return { x: set(state.x, -1, xArr) }
     case arrows.right:
-      return setState(state.x + 1, state.y)
+      return { x: set(state.x, 1, xArr) }
     default:
-      return state;
+      return;
   }
-};
+}
 
-export function start(state) {
-  let dir = [];
-  if (state.y !== 0) {
-    dir.push(arrows.up)
-  }
-  if (state.y !== yArr.length - 1) {
-    dir.push(arrows.down)
-  }
-  if (state.x !== 0) {
-    dir.push(arrows.left)
-  }
-  if (state.x !== xArr.length - 1) {
-    dir.push(arrows.right)
-  }
-  return dir[random(0, dir.length - 1)];
+export function randomDirection(state) {
+  let directions = [];
+
+  state.y !== 0 && directions.push(arrows.up)
+  state.x !== 0 && directions.push(arrows.left)
+  state.y !== yArr.length - 1 && directions.push(arrows.down)
+  state.x !== xArr.length - 1 && directions.push(arrows.right)
+
+  return directions[random(0, directions.length - 1)];
 };
 
 function random(min, max) {
@@ -79,23 +57,36 @@ function random(min, max) {
   //Максимум и минимум включаются
 }
 
-export const setTarget = state => {
-  state.items[state.key].title = target
-};
+
+
+const target = 'ST@RT';
+
+
+const coordObj = {
+  x: random(0, xArr.length - 1),
+  y: random(0, yArr.length - 1)
+}
+
+export const getKey = (x, y) => y * xArr.length + x;
+const key = getKey(coordObj.x, coordObj.y);
+
 
 const defaultItems = fieldInit()
-defaultItems[key].title = target;
-const arrowsArray = [];
-for (let i = 0; i < 10; i++) {
-  arrowsArray.push('')
+defaultItems[key] = target;
+
+export function arrowsInit() {
+  const arrowsArray = [];
+  for (let i = 0; i < 10; i++) {
+    arrowsArray.push('')
+  }
+  return arrowsArray
 }
+
 export const defaultState = {
   ...coordObj,
-  key,
   items: defaultItems,
   interval: 0,
   count: 0,
   isComplete: false,
-  arrowsArray,
-  arr:[1,2]
+  arrowsArray: arrowsInit()
 };

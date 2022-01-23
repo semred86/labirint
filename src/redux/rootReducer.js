@@ -1,6 +1,9 @@
-import {combineReducers} from 'redux'
+import { combineReducers } from 'redux'
+import arrowsReducer from './arrowsReducer'
 import fieldReducer from './fieldReducer'
 
-export const rootReducer = combineReducers({
-  field: fieldReducer
+const rootReducer = combineReducers({
+  field: fieldReducer,
+  arrows: arrowsReducer
 })
+export default rootReducer

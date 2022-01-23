@@ -1,42 +1,44 @@
-import { move, setTarget, start } from './fieldState';
-import { MOVE, TEST } from './types'
+import { move, randomDirection, getKey, arrowsInit, fieldInit } from './fieldState';
+import { MOVE } from './types'
 
-export function test(item) {
-  // return {
-  //   type: TEST,
-  //   payload: item
-  // }
-  return (dispatch, getState) => {
-    dispatch({
-      type: TEST,
-      payload: item
-    })
-  }
-}
+
 
 export function moveAction(direction) {
   return (dispatch, getState) => {
-    const state = getState();
+    const { field } = getState();
     dispatch({
       type: MOVE,
-      payload: move(state, direction)
+      payload: move(field, direction)
     })
   }
 }
+
+export function startAction() {
+  return dispatch => {
+    dispatch({
+      type: MOVE,
+      payload: { isComplete: false, arrowsArray: arrowsInit() }
+    })
+    const interval = setInterval(() => {
+      dispatch(startMove(interval))
+    }, 1000)
+  }
+}
+
 export function startMove(interval) {
   return (dispatch, getState) => {
-    const state = getState();
-    if (state.count < 10) {
-      const direction = start(state);
-      state.arrowsArray[state.count] = direction
-      const newState = move(state, direction);
+    const { field } = getState();
+    if (field.count < 10) {
+      const direction = randomDirection(field);
+      field.arrowsArray[field.count] = direction
+      const newState = move(field, direction);
       dispatch({
         type: MOVE,
         payload: {
           ...newState,
-          count: state.count + 1,
+          count: field.count + 1,
           interval,
-          arrowsArray: state.arrowsArray
+          arrowsArray: [...field.arrowsArray]
         }
       })
     } else {
@@ -45,25 +47,9 @@ export function startMove(interval) {
   }
 }
 
-export function startAction() {
-  return dispatch => {
-    const arrowsArray = [];
-    for (let i = 0; i < 10; i++) {
-      arrowsArray.push('')
-    }
-    dispatch({
-      type: MOVE,
-      payload: { isComplete: false, arrowsArray }
-    })
-    const interval = setInterval(() => {
-      dispatch(startMove(interval))
-    }, 1000)
-  }
-}
-
 export function stopAction() {
   return (dispatch, getState) => {
-    const { interval } = getState();
+    const { interval } = getState().field;
     clearInterval(interval)
     dispatch({
       type: MOVE,
@@ -74,16 +60,18 @@ export function stopAction() {
 
 export function checkAction(k) {
   return (dispatch, getState) => {
-    const state = getState();
-    console.log(state);
-    if (state.isComplete) {
-      setTarget(state)
-      if (k !== state.key) {
-        state.items[k].title = 'X'
+    const { field } = getState();
+    if (field.isComplete) {
+      const items = fieldInit();
+
+      items[getKey(field.x, field.y)] = '@'
+
+      if (k !== getKey(field.x, field.y)) {
+        items[k] = 'X'
       }
       dispatch({
         type: MOVE,
-        payload: { items: state.items, isComplete: false }
+        payload: { items: items, isComplete: false }
       })
     }
   }

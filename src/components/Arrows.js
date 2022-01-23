@@ -1,10 +1,11 @@
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 
 
-function Arrows({ arrowsArray }) {
+function Arrows() {
+  const arrows = useSelector(state => state.field.arrowsArray);
   return (
     <div className="arrows">
-      {arrowsArray.map((item, idx) => {
+      {arrows.map((item, idx) => {
         return (
           <div className="cell" key={idx}>{item}</div>
         )
@@ -12,10 +13,4 @@ function Arrows({ arrowsArray }) {
     </div>
   )
 }
-
-
-const mapStateToProps = state => ({
-  arrowsArray: state.arrowsArray
-})
-
-export default connect(mapStateToProps, null)(Arrows)
+export default Arrows

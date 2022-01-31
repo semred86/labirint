@@ -1,12 +1,17 @@
-import { takeEvery, put } from 'redux-saga/effects'
-import { MOVE } from './types'
-import { move } from './actions'
+import { takeEvery, put, call } from 'redux-saga/effects'
+import { HORIZONTAL, VERTICAL } from './types'
+// import { move } from './actions'
 
 export function* sagaWatcher() {
-  yield takeEvery(MOVE, sagaWorker)
+  yield takeEvery(VERTICAL, sagaWorker)
+  yield takeEvery(HORIZONTAL, sagaWorker)
 }
 
 function* sagaWorker() {
-  yield put(move())
+  // yield call(move)
 }
+
+// function move() {
+//   console.log(11111111111);
+// }
 
